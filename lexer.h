@@ -49,9 +49,9 @@ struct token_t {
   void _raiseKeyword();
 };
 
-struct parser_t {
+struct lexer_t {
 
-  parser_t(const char* start, const char* end)
+  lexer_t(const char* start, const char* end)
     : state(state_t{ start, end, 1 })
   {
   }

@@ -1,19 +1,19 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "parse.h"
+#include "lexer.h"
 
 
 void test(const char *s) {
   size_t len = strlen(s);
-  parser_t parser{ s, s + len };
+  lexer_t lexer{ s, s + len };
   
   printf("------------------------------------------------\n");
 
   token_t token;
   do {
 
-    parser.next(token);
+    lexer.next(token);
 
     size_t len = token.length();
     const char* str = token.ptr;

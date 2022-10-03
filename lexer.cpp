@@ -1,6 +1,6 @@
 #include <cassert>
 
-#include "parse.h"
+#include "lexer.h"
 
 
 namespace {
@@ -78,7 +78,7 @@ void token_t::_raiseKeyword() {
 #undef CHECK
 }
 
-void parser_t::state_t::advance(token_t& token) {
+void lexer_t::state_t::advance(token_t& token) {
 
   ptr = skipWhitespace(ptr);
   token.ptr  = ptr;
@@ -140,7 +140,7 @@ void parser_t::state_t::advance(token_t& token) {
   token.end = ptr;
 }
 
-char parser_t::state_t::nextChar() {
+char lexer_t::state_t::nextChar() {
   ptr  += (*ptr == '\0') ? 0 : 1;
   line += (*ptr == '\n') ? 1 : 0;
   return *ptr;
