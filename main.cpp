@@ -21,14 +21,13 @@ void test(const char *s) {
     printf("%2u ", token.type);
 
     switch (token.type) {
-    case tokenEOF: printf("EOF\n"); break;
-    case tokenEOL: printf("EOL\n"); break;
+    case token_eof: printf("EOF\n"); break;
+    case token_eol: printf("EOL\n"); break;
     default:
-      printf("'%.*s'\n", len, str);
+      printf("'%.*s'\n", int(len), str);
     }
 
-  } while (token.type != tokenEOF);
-
+  } while (token.type != token_eof);
 }
 
 int main(int argc, char** args) {

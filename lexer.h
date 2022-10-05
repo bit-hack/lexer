@@ -2,36 +2,40 @@
 #include <cstdint>
 
 enum token_type_t {
-  tokenUnknown,
-  tokenEOF,
-  tokenEOL,
+  token_unknown,
+  token_eof,     // '\0'
+  token_eol,     // '\n'
 
-  tokenSymbol,
-  tokenNumber,
-  tokenString,  // "..."
+  token_symbol,
+  token_number,
+  token_string,  // "..."
 
-  tokenLParen,  // (
-  tokenRParen,  // )
-  tokenLBrace,  // [
-  tokenRBrace,  // ]
-  tokenDot,     // .
-  tokenComma,   // ,
-  tokenPlus,    // +
-  tokenMinus,   // -
-  tokenMul,     // *
-  tokenDiv,     // /
-  tokenMod,     // %
+  token_lparen,  // (
+  token_rparen,  // )
+  token_lbrace,  // [
+  token_rbrace,  // ]
+  token_dot,     // .
+  token_comma,   // ,
+  token_plus,    // +
+  token_minus,   // -
+  token_mul,     // *
+  token_div,     // /
+  token_mod,     // %
+  token_colon,   // :
 
-  tokenAnd,
-  tokenElse,
-  tokenEnd,
-  tokenIf,
-  tokenFor,
-  tokenFunction,
-  tokenNot,
-  tokenOr,
-  tokenVar,
-  tokenWhile,
+  token_and,
+  token_continue,
+  token_else,
+  token_end,
+  token_for,
+  token_function,
+  token_goto,
+  token_if,
+  token_not,
+  token_or,
+  token_return,
+  token_var,
+  token_while,
 };
 
 struct token_t {
@@ -46,7 +50,7 @@ struct token_t {
     return end - ptr;
   }
 
-  void _raiseKeyword();
+  void _raise_keyword();
 };
 
 struct lexer_t {

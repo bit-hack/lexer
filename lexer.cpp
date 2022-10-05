@@ -5,40 +5,40 @@
 
 namespace {
 
-bool isWhitespace(char ch) {
+bool is_whitespace(char ch) {
   return (ch <= ' ' ) &&
          (ch != '\0') &&
          (ch != '\n');
 }
 
-bool isHash(char ch) {
+bool is_hash(char ch) {
   return ch == '#';
 }
 
-bool isEOL(char ch) {
+bool is_eol(char ch) {
   return ch == '\n';
 }
 
-bool isAlpha(char ch) {
+bool is_alpha(char ch) {
   return (ch >= 'a' && ch <= 'z') ||
          (ch >= 'A' && ch <= 'Z') ||
          (ch == '_');
 }
 
-bool isNumber(char ch) {
+bool is_number(char ch) {
   return ch >= '0' && ch <= '9';
 }
 
-bool isEOF(char ch) {
+bool is_eof(char ch) {
   return ch == '\0';
 }
 
-bool isQuote(char ch) {
+bool is_quote(char ch) {
   return ch == '"';
 }
 
-const char* skipWhitespace(const char* ptr) {
-  for (; isWhitespace(*ptr); ++ptr);
+const char* skip_whitespace(const char* ptr) {
+  for (; is_whitespace(*ptr); ++ptr);
   return ptr;
 }
 
@@ -56,23 +56,26 @@ bool token_t::strmatch(const char* x) const {
   }
 }
 
-void token_t::_raiseKeyword() {
-  assert(type == tokenSymbol);
+void token_t::_raise_keyword() {
+  assert(type == token_symbol);
 
 #define CHECK(STR, TOK) \
   if (strmatch(STR)) { type = TOK; break; };
 
   switch (*ptr) {
-  case 'a': CHECK("and",      tokenAnd);      break;
-  case 'e': CHECK("else",     tokenElse);
-            CHECK("end",      tokenEnd);      break;
-  case 'i': CHECK("if",       tokenIf);       break;
-  case 'f': CHECK("for",      tokenFor);
-            CHECK("function", tokenFunction); break;
-  case 'n': CHECK("not",      tokenNot);      break;
-  case 'o': CHECK("or",       tokenOr);       break;
-  case 'v': CHECK("var",      tokenVar);      break;
-  case 'w': CHECK("while",    tokenWhile);    break;
+  case 'a': CHECK("and",      token_and);      break;
+  case 'c': CHECK("continue", token_continue); break;
+  case 'e': CHECK("else",     token_else);
+            CHECK("end",      token_end);      break;
+  case 'g': CHECK("goto",     token_goto);     break;
+  case 'i': CHECK("if",       token_if);       break;
+  case 'f': CHECK("for",      token_for);
+            CHECK("function", token_function); break;
+  case 'n': CHECK("not",      token_not);      break;
+  case 'o': CHECK("or",       token_or);       break;
+  case 'r': CHECK("return",   token_return);   break;
+  case 'v': CHECK("var",      token_var);      break;
+  case 'w': CHECK("while",    token_while);    break;
   }
 
 #undef CHECK
@@ -80,60 +83,61 @@ void token_t::_raiseKeyword() {
 
 void lexer_t::state_t::advance(token_t& token) {
 
-  ptr = skipWhitespace(ptr);
+  ptr = skip_whitespace(ptr);
   token.ptr  = ptr;
   token.line = line;
 
   char ch = *ptr;
 
-  if (isHash(ch)) {
-    for (; !(isEOL(ch) || isEOF(ch)); ch = nextChar());
-    token.type = tokenEOL;
-    ptr += isEOL(ch) ? 1 : 0;
+  if (is_hash(ch)) {
+    for (; !(is_eol(ch) || is_eof(ch)); ch = nextChar());
+    token.type = token_eol;
+    ptr += is_eol(ch) ? 1 : 0;
     token.end = ptr;
     return;
   }
 
-  if (isNumber(ch)) {
-    for (; isNumber(ch); ch = nextChar());
-    token.type = tokenNumber;
+  if (is_number(ch)) {
+    for (; is_number(ch); ch = nextChar());
+    token.type = token_number;
 
     token.end = ptr;
     return;
   }
 
-  if (isAlpha(ch)) {
-    for (; isAlpha(ch) || isNumber(ch); ch = nextChar());
-    token.type = tokenSymbol;
+  if (is_alpha(ch)) {
+    for (; is_alpha(ch) || is_number(ch); ch = nextChar());
+    token.type = token_symbol;
     token.end = ptr;
-    token._raiseKeyword();
+    token._raise_keyword();
     return;
   }
 
-  if (isQuote(ch)) {
+  if (is_quote(ch)) {
     ch = nextChar();
-    for (; !isQuote(ch) && !isEOF(ch); ch = nextChar());
-    token.type = tokenString;
+    for (; !is_quote(ch) && !is_eof(ch); ch = nextChar());
+    token.type = token_string;
 
     token.end = ++ptr;
     return;
   }
 
   switch (ch) {
-  case '\0': token.type = tokenEOF;     break;
-  case '\n': token.type = tokenEOL;     break;
-  case '(':  token.type = tokenLParen;  break;
-  case ')':  token.type = tokenRParen;  break;
-  case '[':  token.type = tokenLBrace;  break;
-  case ']':  token.type = tokenRBrace;  break;
-  case '.':  token.type = tokenDot;     break;
-  case ',':  token.type = tokenComma;   break;
-  case '+':  token.type = tokenPlus;    break;
-  case '-':  token.type = tokenMinus;   break;
-  case '*':  token.type = tokenMul;     break;
-  case '/':  token.type = tokenDiv;     break;
-  case '%':  token.type = tokenMod;     break;
-  default:   token.type = tokenUnknown; break;
+  case '\0': token.type = token_eof;     break;
+  case '\n': token.type = token_eol;     break;
+  case '(':  token.type = token_lparen;  break;
+  case ')':  token.type = token_rparen;  break;
+  case '[':  token.type = token_lbrace;  break;
+  case ']':  token.type = token_rbrace;  break;
+  case '.':  token.type = token_dot;     break;
+  case ',':  token.type = token_comma;   break;
+  case '+':  token.type = token_plus;    break;
+  case '-':  token.type = token_minus;   break;
+  case '*':  token.type = token_mul;     break;
+  case '/':  token.type = token_div;     break;
+  case '%':  token.type = token_mod;     break;
+  case ':':  token.type = token_colon;   break;
+  default:   token.type = token_unknown; break;
   }
 
   nextChar();
